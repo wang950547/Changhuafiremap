@@ -4,13 +4,13 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Changhua</title>
-    <link href="../css/hospitalButton.css" rel="stylesheet" type="text/css">
+    <link href="css/hospitalButton.css" rel="stylesheet" type="text/css">
 
     <script src="http://maps.googleapis.com/maps/api/js"></script>
-    <script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 
     <!--讀出彰化縣醫院的資料-->
-    <script type="text/javascript" src = "../js/allChanghuaHospital.js"></script>
+    <script type="text/javascript" src = "js/allChanghuaHospital.js"></script>
     <!--地圖初始化-->
     <script>
         var m = null;
@@ -35,7 +35,7 @@
             if(!isShowed) {
                 var hospitals = JSON.parse(JSON.stringify(json));
                 var image = {
-                    url: '../img/images.jpg',
+                    url: 'img/images.jpg',
                     size: new google.maps.Size(32, 32),
                     // The origin for this image is (0, 0).
                     origin: new google.maps.Point(0, 0),
