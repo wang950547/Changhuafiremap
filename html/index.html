@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Changhua</title>
+    <link href="../css/hospitalButton.css" rel="stylesheet" type="text/css">
+
+    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
+
+    <!--讀出彰化縣醫院的資料-->
+    <script type="text/javascript" src = "../js/allChanghuaHospital.js"></script>
+    <!--地圖初始化-->
+    <script>
+        var m = null;
+        function initialize() {
+            var latlng = { lat: 23.984064, lng: 120.507191 };
+            var map = new google.maps.Map(document.getElementById('googleMap'), {
+                zoom: 11,
+                center: latlng,
+                mapTypeId:google.maps.MapTypeId.ROADMAP
+            });
+            m = map;
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+
+    <script>
+        var markers = [];
+        var isShowed = false;
+        <!--標出彰化醫院位置-->
+        function displayChanghuaAllHospital(map)
+        {
+            if(!isShowed) {
+                var hospitals = JSON.parse(JSON.stringify(json));
+                var image = {
+                    url: '../img/images.jpg',
+                    size: new google.maps.Size(32, 32),
+                    // The origin for this image is (0, 0).
+                    origin: new google.maps.Point(0, 0),
+                    // The anchor for this image is the base of the flagpole at (0, 32).
+                    anchor: new google.maps.Point(0, 32)
+                };
+                for (var i = 0; i < hospitals.hospital.length; i++) {
+                    var h = hospitals.hospital[i];
+                    var info = h.name + "<br/>" + h.address;
+                    var marker = new google.maps.Marker({
+                        position: {lat: h.lat_H, lng: h.lng_H},
+                        map: map,
+                        icon: image,
+                        title: h.name,
+                        html: info
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: info
+                    });
+                    google.maps.event.addListener( marker , 'click', function(info) {
+                        infowindow.setContent(this.html);
+                        infowindow.open(map,this);
+                    });
+                    markers.push(marker);
+                }
+                isShowed = true;
+                document.getElementById("showHospitalLocation").innerHTML = "Hide Hospitals' Location";
+            }
+            else
+            {
+                for(var i = 0; i < markers.length; i++)
+                {
+                    markers[i].setMap(null);
+                }
+                isShowed = false;
+                document.getElementById("showHospitalLocation").innerHTML = "Show Hospitals' Location";
+            }
+
+        }
+    </script>
+
+</head>
+
+<body>
+
+<div id="googleMap" style="width:800px;height:600px;">
+
+</div>
+<br/>
+<br/>
+<div class="hospitalbutton">
+    <a id = "showHospitalLocation" onkeypress="displayChanghuaAllHospital(m);" onclick="displayChanghuaAllHospital(m);">Show Hospitals' Location</a>
+</div>
+
+</body>
+</html>
