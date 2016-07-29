@@ -12,6 +12,9 @@
 
     <!--讀出彰化縣醫院的資料-->
     <script type="text/javascript" src = "js/allChanghuaHospital.js"></script>
+
+    <!--讀出彰化縣geojson-->
+    <script type="text/javascript" src = "js/ChanghuaCountry.js"></script>
     <!--地圖初始化-->
     <script>
         var m = null;
@@ -76,6 +79,56 @@
             }
 
         }
+        var fireMapIsShow = false;
+        function displayChanghuaCity(map)
+        {
+            if(!fireMapIsShow) {
+                var geoString = JSON.stringify(geojson);
+                var geoJson = JSON.parse(geoString);
+                var features = map.data.addGeoJson(geoJson);
+                google.maps.event.addDomListener(document.getElementById('showCityArea'), 'click', function () {
+                    for (var i = 0; i < features.length; i++)
+                        map.data.remove(features[i]);
+                });
+                map.data.addListener('mouseover', function(event) {
+                    document.getElementById('info-box').innerHTML =
+                     event.feature.getProperty('C_Name')
+                    + event.feature.getProperty('T_Name')
+                    + "<br/>fire_Value:" + event.feature.getProperty('fire_Value');
+                });
+                var r = 255;
+                var g = 255;
+                var b = 0;
+
+                map.data.setStyle(function(feature) {
+                    g = 255;
+                    var fireVal = feature.getProperty('fire_Value');
+                    g = g - (fireVal * 10);
+                    return /** @type {google.maps.Data.StyleOptions} */({
+                        fillColor: rgbToHex(r , g , b),
+                        fillOpacity:0.5,
+                        strokeWeight: 3
+                    });
+                });
+                fireMapIsShow = true;
+                document.getElementById("showCityArea").innerHTML = "Hide City's FireMap";
+            }
+            else
+            {
+                fireMapIsShow = false;
+                document.getElementById("showCityArea").innerHTML = "Show City's FireMap";
+            }
+
+            function rgbToHex(r, g, b) {
+                return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+            }
+
+            function componentToHex(c) {
+                var hex = c.toString(16);
+                return hex.length == 1 ? "0" + hex : hex;
+            }
+
+        }
     </script>
 
 </head>
@@ -85,11 +138,14 @@
 <div id="googleMap" style="width:800px;height:600px;">
 
 </div>
+<div id="info-box" style="font-size: 20px"></div>
 <br/>
 <br/>
 <div class="hospitalbutton">
     <a id = "showHospitalLocation" onkeypress="displayChanghuaAllHospital(m);" onclick="displayChanghuaAllHospital(m);">Show Hospitals' Location</a>
 </div>
-
+<div class="citybutton">
+    <a id = "showCityArea" onkeypress="displayChanghuaCity(m);" onclick="displayChanghuaCity(m);">Show City' FireMap</a>
+</div>
 </body>
 </html>
